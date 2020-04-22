@@ -77,9 +77,14 @@ Tree& Tree::addFather(string child_name, string father_name){
         child->father = new node();
         child->father->depth = child->depth + 1;
         child->father->type = F;
+        child->father->name = father_name;
     }
+    else
+    {
+        throw  runtime_error("cannot add father to \""+child_name+"\""+": father already exists");
+    }
+    
     // name new father or rename existing one
-    child->father->name = father_name;
 
     return *this;
 }
@@ -96,8 +101,13 @@ Tree& Tree::addMother(string child_name, string mother_name){
         child->mother = new node();
         child->mother->depth = child->depth + 1;
         child->mother->type = M;
-    }
     child->mother->name = mother_name;
+    }
+    else
+    {
+        throw  runtime_error("cannot add mother to \""+child_name+"\""+": mother already exists");
+    }
+    
 
     return *this;
 }
@@ -174,7 +184,7 @@ string Tree::find(string relat){
     }
     relative = findNode(root, depth, pt);
     if(relative == nullptr){
-        return "not found";
+        throw runtime_error("No such relation!");
     }
     return relative->name;
 }
@@ -203,6 +213,12 @@ void Tree::display(){
 
 Tree& Tree::remove(string name){
     node** n = findNode(&root, name);
+    if(*n == root){
+        throw runtime_error("Cannot delete root!");
+    }
+    if(*n == nullptr){
+        throw runtime_error("The node you are trying to delete does not exist!");
+    }
     deleteNodeAndDescendants(n);
     return *this;
 }
